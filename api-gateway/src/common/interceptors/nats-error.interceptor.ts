@@ -32,8 +32,6 @@ export class NatsErrorInterceptor implements NestInterceptor {
               }),
           );
         }
-
-        // timeout(5000)
         if (msg.includes('Timeout') || msg.includes('timeout')) {
           return throwError(
             () =>
@@ -44,6 +42,20 @@ export class NatsErrorInterceptor implements NestInterceptor {
               }),
           );
         }
+        if (
+          msg.includes('no subscribers') ||
+          msg.includes('There are no subscribers')
+        ) {
+          return throwError(
+            () =>
+              new ServiceUnavailableException({
+                code: 'NO_SUBSCRIBER',
+                message: 'No service is listening to this subject',
+                detail: msg,
+              }),
+          );
+        }
+
         return throwError(
           () =>
             new BadGatewayException({
