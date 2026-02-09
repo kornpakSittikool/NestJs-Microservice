@@ -13,6 +13,12 @@ export class AuthController {
   login(@Payload() data: LoginDto) {
     return this.authService.authLogin(data);
   }
+
+  @MessagePattern('auth.health')
+  health() {
+    return this.authService.authHealth();
+  }
+
   // @Post()
   // create(@Body() createAuthDto: CreateAuthDto) {
   //   return this.authService.create(createAuthDto);

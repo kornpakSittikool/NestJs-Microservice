@@ -13,6 +13,11 @@ export class AuthHttpController {
     return this.authHttpService.login(body);
   }
 
+  @Post('health')
+  async health(): Promise<LoginResponse> {
+    return this.authHttpService.health();
+  }
+
   // @Post()
   // create(@Body() createAuthHttpDto: CreateAuthHttpDto) {
   //   return this.authHttpService.create(createAuthHttpDto);

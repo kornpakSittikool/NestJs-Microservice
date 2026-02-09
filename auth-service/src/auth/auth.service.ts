@@ -16,6 +16,11 @@ export class AuthService {
     }
     return ok({ accessToken: 'mock-token', email: body.email });
   }
+
+  authHealth(): RpcResponse<{ service: string }> {
+    return ok({ service: 'auth-service' });
+  }
+
   // create(createAuthDto: CreateAuthDto) {
   //   return 'This action adds a new auth';
   // }

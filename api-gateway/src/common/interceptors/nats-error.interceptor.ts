@@ -1,6 +1,7 @@
 import {
   CallHandler,
   ExecutionContext,
+  HttpException,
   Injectable,
   NestInterceptor,
   ServiceUnavailableException,
@@ -18,6 +19,9 @@ export class NatsErrorInterceptor implements NestInterceptor {
   ): Observable<unknown> {
     return next.handle().pipe(
       catchError((err: unknown) => {
+        if (err instanceof HttpException) {
+          return throwError(() => err);
+        }
         const msg = err instanceof Error ? err.message : String(err);
         if (
           msg.includes('ECONNREFUSED') ||
