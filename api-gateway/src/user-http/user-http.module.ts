@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { Transport } from '@nestjs/microservices/enums/transport.enum';
+import { UserHttpService } from './user-http.service';
+import { UserHttpController } from './user-http.controller';
 import { ClientsModule } from '@nestjs/microservices/module/clients.module';
+import { Transport } from '@nestjs/microservices/enums/transport.enum';
 
 @Module({
   imports: [
@@ -12,12 +12,12 @@ import { ClientsModule } from '@nestjs/microservices/module/clients.module';
         transport: Transport.NATS,
         options: {
           servers: [process.env.NATS_URL ?? 'nats://localhost:4222'],
-          name: `auth-service-${process.pid}`,
+          name: `auth-gateway-${process.pid}`,
         },
       },
     ]),
   ],
-  controllers: [AuthController],
-  providers: [AuthService],
+  controllers: [UserHttpController],
+  providers: [UserHttpService],
 })
-export class AuthModule {}
+export class UserHttpModule {}

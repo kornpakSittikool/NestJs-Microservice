@@ -1,8 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices/client/client-proxy';
 import { LoginDto } from './dto/login.dto';
 import { firstValueFrom, timeout } from 'rxjs';
-import { ok, RpcResponse } from 'src/common/contracts/rpc-response';
+import { RpcResponse } from 'src/common/contracts/rpc-response';
+import {
+  BadGatewayException,
+  BadRequestException,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 
 type LoginResponse = {
   accessToken: string;
@@ -15,15 +20,20 @@ export class AuthHttpService {
   constructor(@Inject('NATS_CLIENT') private readonly nats: ClientProxy) {}
 
   async login(body: LoginDto): Promise<LoginRpc> {
-    const raw = await firstValueFrom(
+    const res = await firstValueFrom(
       this.nats
         .send<LoginRpc, LoginDto>('auth.login', body)
         .pipe(timeout(5000)),
     );
-    if (raw.ok === false) {
-      throw new Error(raw.error.message);
+    if (!res.ok) {
+      switch (res.error.code) {
+        case 'VALIDATION':
+          throw new BadRequestException(res.error);
+        default:
+          throw new BadGatewayException(res.error);
+      }
     }
-    return 'ok' in raw ? raw : ok(raw);
+    return res;
   }
 
   health(): Promise<RpcResponse<{ ok: boolean; service: string }>> {
@@ -36,23 +46,4 @@ export class AuthHttpService {
         .pipe(timeout(5000)),
     );
   }
-  // create(createAuthHttpDto: CreateAuthHttpDto) {
-  //   return 'This action adds a new authHttp';
-  // }
-
-  // findAll() {
-  //   return `This action returns all authHttp`;
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} authHttp`;
-  // }
-
-  // update(id: number, updateAuthHttpDto: UpdateAuthHttpDto) {
-  //   return `This action updates a #${id} authHttp`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} authHttp`;
-  // }
 }

@@ -17,32 +17,4 @@ export class AuthHttpController {
   async health(): Promise<LoginResponse> {
     return this.authHttpService.health();
   }
-
-  // @Post()
-  // create(@Body() createAuthHttpDto: CreateAuthHttpDto) {
-  //   return this.authHttpService.create(createAuthHttpDto);
-  // }
-
-  // @Get()
-  // findAll() {
-  //   return this.authHttpService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.authHttpService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateAuthHttpDto: UpdateAuthHttpDto,
-  // ) {
-  //   return this.authHttpService.update(+id, updateAuthHttpDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.authHttpService.remove(+id);
-  // }
 }

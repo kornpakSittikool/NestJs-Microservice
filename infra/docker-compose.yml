@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 services:
   nats:
     image: nats:2.10
@@ -6,3 +6,26 @@ services:
     ports:
       - "4222:4222"
       - "8222:8222"
+
+  api-gateway:
+    build: ../api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      NATS_URL: nats://nats:4222
+    depends_on:
+      - nats
+
+  auth-service:
+    build: ../auth-service
+    environment:
+      NATS_URL: nats://nats:4222
+    depends_on:
+      - nats
+
+  user-service:
+    build: ../user-service
+    environment:
+      NATS_URL: nats://nats:4222
+    depends_on:
+      - nats
